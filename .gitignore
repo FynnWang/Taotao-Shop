@@ -2,5 +2,6 @@
 .metadata
 .recommenders
 RemoteSystemsTempFiles
-*/target/
+**/target
+*.iml
 Servers
