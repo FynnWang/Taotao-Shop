@@ -22,8 +22,7 @@ import com.taotao.rest.pojo.ItemCatResult;
 import com.taotao.rest.service.ItemCatService;
 
 @Service
-public class ItemCatServiceImpl implements ItemCatService
-{
+public class ItemCatServiceImpl implements ItemCatService {
     private static final Logger logger = LoggerFactory.getLogger(ItemCatServiceImpl.class);
 
     @Autowired
@@ -33,8 +32,7 @@ public class ItemCatServiceImpl implements ItemCatService
     private JedisClient jedisClient;
 
     @Override
-    public ItemCatResult getItemCatResult ()
-    {
+    public ItemCatResult getItemCatResult() {
         logger.info("get into Service");
 
         ItemCatResult result = new ItemCatResult();
@@ -42,8 +40,7 @@ public class ItemCatServiceImpl implements ItemCatService
         return result;
     }
 
-    public List<?> getItemCatList (long parentId)
-    {
+    public List<?> getItemCatList(long parentId) {
         logger.info("exercute getItemCatList");
 
         TbItemCatExample example = new TbItemCatExample();
@@ -53,30 +50,24 @@ public class ItemCatServiceImpl implements ItemCatService
 
         List resultList = new ArrayList<>();
         int count = 0;
-        for (TbItemCat tbItemCat : list)
-        {
+        for (TbItemCat tbItemCat : list) {
             logger.info("start foreach");
-            if (tbItemCat.getIsParent())
-            {
+            if (tbItemCat.getIsParent()) {
                 ItemCatNode node = new ItemCatNode();
                 node.setUrl("/products/" + tbItemCat.getId() + ".html");
-                if (parentId == 0)
-                {
+                if (parentId == 0) {
                     node.setName("<a href='/products/" + tbItemCat.getId() + ".html'> " + tbItemCat.getName() + "</a>");
-                } else
-                {
+                } else {
                     node.setName(tbItemCat.getName());
                 }
                 node.setItem(getItemCatList(tbItemCat.getId()));
 
                 resultList.add(node);
                 count++;
-                if (parentId == 0 && count >= 14)
-                {
+                if (parentId == 0 && count >= 14) {
                     break;
                 }
-            } else
-            {
+            } else {
                 resultList.add("/products/" + tbItemCat.getId() + ".html|" + tbItemCat.getName());
             }
         }
@@ -84,30 +75,5 @@ public class ItemCatServiceImpl implements ItemCatService
         return resultList;
     }
 
-    public List<TbContent> getContentList (long contentId)
-    {
-        try
-        {
-            String cacheString = jedisClient.hget("CONTENT_LIST_HASH_KEY", String.valueOf(contentId));
-            if (!StringUtils.isBlank(cacheString))
-            {
-                List<TbContent> contentList = JsonUtils.jsonToList(cacheString, TbContent.class);
-                return contentList;
-            }
-        } catch (Exception e)
-        {
-            logger.error("[ItemCatServiceImpl] [getContentList] jedisClient fail to get : " + e.getMessage());
-        }
-        List<TbContent> contentList = new ArrayList<>();
-        try
-        {
-            String cacheString = JsonUtils.objectToJson(contentList);
-            long CONTENT_LIST_HASH_KEY = jedisClient.hset("CONTENT_LIST_HASH_KEY", String.valueOf(contentId), cacheString);
 
-        } catch (Exception e)
-        {
-            logger.error("[ItemCatServiceImpl] [getContentList] jedisClient fail to set : " + e.getMessage());
-        }
-        return contentList;
-    }
 }

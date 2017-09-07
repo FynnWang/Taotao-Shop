@@ -1,4 +1,5 @@
 package com.taotao.rest.service;
 
-public class ContentService {
+
+public interface ContentService {
 }
