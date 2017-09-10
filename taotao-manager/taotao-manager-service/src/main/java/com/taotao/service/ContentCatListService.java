@@ -11,7 +11,7 @@ public interface ContentCatListService {
 
     TaotaoResult createContentCat(long parentId, String name);
 
-    TaotaoResult deleteContentCat(Long id);
+    TaotaoResult deleteContentCat(long id);
 
     TaotaoResult renameContentCat(Long id, String name);
 

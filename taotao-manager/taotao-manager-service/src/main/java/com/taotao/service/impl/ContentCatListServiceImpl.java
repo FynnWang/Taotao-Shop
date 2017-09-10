@@ -19,40 +19,40 @@ import com.taotao.service.ContentCatListService;
 public class ContentCatListServiceImpl implements ContentCatListService {
 
     @Autowired
-    TbContentCategoryMapper contentCategoryMapper;
+    private TbContentCategoryMapper contentCategoryMapper;
 
     @Override
     public List<EUTreeNode> getContentCatList(Long parentId) {
-
         TbContentCategoryExample example = new TbContentCategoryExample();
         Criteria criteria = example.createCriteria();
         criteria.andParentIdEqualTo(parentId);
-        List<TbContentCategory> catlist = contentCategoryMapper.selectByExample(example);
-        List<EUTreeNode> nodeList = new ArrayList<>();
-
-        for (TbContentCategory tbContentCategory : catlist) {
-            EUTreeNode node = new EUTreeNode();
-            node.setId(tbContentCategory.getId());
-            node.setState(tbContentCategory.getIsParent() ? "closed" : "open");
-            node.setText(tbContentCategory.getName());
-            nodeList.add(node);
+        List<TbContentCategory> resultList = contentCategoryMapper.selectByExample(example);
+        List<EUTreeNode> euTreeNodesList = new ArrayList<>();
+        for (TbContentCategory tbContentCategory : resultList) {
+            EUTreeNode euTreeNode = new EUTreeNode();
+            euTreeNode.setId(tbContentCategory.getId());
+            euTreeNode.setText(tbContentCategory.getName());
+            euTreeNode.setState(tbContentCategory.getIsParent() ? "closed" : "open");
+            euTreeNodesList.add(euTreeNode);
         }
-        return nodeList;
+        return euTreeNodesList;
     }
 
-    // 添加一个商品管理分类
+
+    //添加节点动作,两个动作，一个添加节点，把父节点状态变成isparent=1
     @Override
     public TaotaoResult createContentCat(long parentId, String name) {
+        //插入数据
         TbContentCategory tbContentCategory = new TbContentCategory();
-        tbContentCategory.setName(name);
-        tbContentCategory.setIsParent(false);
-        tbContentCategory.setStatus(1);
         tbContentCategory.setParentId(parentId);
+        tbContentCategory.setName(name);
+        tbContentCategory.setStatus(1);
         tbContentCategory.setSortOrder(1);
+        tbContentCategory.setIsParent(false);
         tbContentCategory.setCreated(new Date());
         tbContentCategory.setUpdated(new Date());
         contentCategoryMapper.insert(tbContentCategory);
-
+        //更新父节点动作
         TbContentCategory parent = contentCategoryMapper.selectByPrimaryKey(parentId);
         if (!parent.getIsParent()) {
             parent.setIsParent(true);
@@ -62,23 +62,19 @@ public class ContentCatListServiceImpl implements ContentCatListService {
     }
 
     @Override
-    public TaotaoResult deleteContentCat(Long id) {
-
-        Long parentId = contentCategoryMapper.selectByPrimaryKey(id).getParentId();
-
+    public TaotaoResult deleteContentCat(long id) {
+        TbContentCategory son = contentCategoryMapper.selectByPrimaryKey(id);
+        Long parentId = son.getParentId();
         contentCategoryMapper.deleteByPrimaryKey(id);
-
         TbContentCategoryExample example = new TbContentCategoryExample();
-        example.createCriteria().andParentIdEqualTo(parentId);
-
-        List<TbContentCategory> list = contentCategoryMapper.selectByExample(example);
-        if (list.size() == 0) {
-            TbContentCategory category = new TbContentCategory();
-            category.setId(parentId);
-            category.setIsParent(false);
-            contentCategoryMapper.updateByPrimaryKeySelective(category);
+        Criteria criteria = example.createCriteria();
+        criteria.andParentIdEqualTo(parentId);
+        List<TbContentCategory> tbContentCategories = contentCategoryMapper.selectByExample(example);
+        if (tbContentCategories.size() == 0) {
+            TbContentCategory parent = contentCategoryMapper.selectByPrimaryKey(parentId);
+            parent.setIsParent(false);
+            contentCategoryMapper.updateByPrimaryKeySelective(parent);
         }
-
         return TaotaoResult.ok();
     }
 

@@ -19,13 +19,14 @@ public class ContentCatListController {
     @Autowired
     private ContentCatListService contenCatListService;
 
+
     @RequestMapping("/list")
     @ResponseBody
-    public List<EUTreeNode> getContentCatList(@RequestParam(value = "id", defaultValue = "0") Long parentId) {
+    public List<EUTreeNode> getContentCatListByParentId(@RequestParam(value = "id", defaultValue = "0") Long parentId) {
 
-        List<EUTreeNode> nodeList = contenCatListService.getContentCatList(parentId);
+        List<EUTreeNode> contentCatList = contenCatListService.getContentCatList(parentId);
 
-        return nodeList;
+        return contentCatList;
     }
 
     @RequestMapping("/create")
@@ -33,7 +34,7 @@ public class ContentCatListController {
     public TaotaoResult createContentCat(Long parentId, String name) {
 
         TaotaoResult result = contenCatListService.createContentCat(parentId, name);
-
+        System.out.println("it's ok");
         return result;
     }
 
@@ -41,13 +42,9 @@ public class ContentCatListController {
     @ResponseBody
     public TaotaoResult deleteContentCat(Long id) {
 
-//		System.out.println(parentId + ":" + id);
-
-        TaotaoResult result = contenCatListService.deleteContentCat(id);
-
-        return result;
+        TaotaoResult taotaoResult = contenCatListService.deleteContentCat(id);
+        return taotaoResult;
     }
-
 
     @RequestMapping("/update")
     @ResponseBody
