@@ -22,78 +22,69 @@ import com.taotao.service.ItemService;
 @Service
 public class ItemServiceImpl implements ItemService {
 
-	@Autowired
-	private TbItemMapper itemMapper;
+    @Autowired
+    private TbItemMapper itemMapper;
 
-	@Autowired
-	private TbItemDescMapper itemDescMapper;
+    @Autowired
+    private TbItemDescMapper itemDescMapper;
 
-	@Override
-	public TbItem getItemById(long itemId) {
+    @Override
+    public TbItem getItemById(long itemId) {
 
-		// TbItem selectByPrimaryKey = itemMapper.selectByPrimaryKey(itemId);
-		// 创建一个example，根据查询条件查询
-		TbItemExample example = new TbItemExample();
-		// 创建一个查询条件
-		Criteria criteria = example.createCriteria();
-		criteria.andIdEqualTo(itemId);
-		List<TbItem> list = itemMapper.selectByExample(example);
-		if (list != null && list.size() > 0) {
-			TbItem item = list.get(0);
-			return item;
-		}
-		return null;
-	}
+        // TbItem selectByPrimaryKey = itemMapper.selectByPrimaryKey(itemId);
+        // 创建一个example，根据查询条件查询
+        TbItemExample example = new TbItemExample();
+        // 创建一个查询条件
+        Criteria criteria = example.createCriteria();
+        criteria.andIdEqualTo(itemId);
+        List<TbItem> list = itemMapper.selectByExample(example);
+        if (list != null && list.size() > 0) {
+            TbItem item = list.get(0);
+            return item;
+        }
+        return null;
+    }
 
-	@Override
-	public EUDateGridResult getItemList(int page, int rows) {
-		// 查询商品列表
-		TbItemExample example = new TbItemExample();
-		// 分页处理
-		PageHelper.startPage(page, rows);
-		List<TbItem> list = itemMapper.selectByExample(example);
-		// 创建一个放回值对象
-		EUDateGridResult result = new EUDateGridResult();
-		result.setRows(list);
-		// 取记录总条数
-		PageInfo<TbItem> pageInfo = new PageInfo<>(list);
-		result.setTotal(pageInfo.getTotal());
-		return result;
-	}
+    @Override
+    public EUDateGridResult getItemList(int page, int rows) {
+        // 查询商品列表
+        TbItemExample example = new TbItemExample();
+        // 分页处理
+        PageHelper.startPage(page, rows);
+        List<TbItem> list = itemMapper.selectByExample(example);
+        // 创建一个放回值对象
+        EUDateGridResult result = new EUDateGridResult();
+        result.setRows(list);
+        // 取记录总条数
+        PageInfo<TbItem> pageInfo = new PageInfo<>(list);
+        result.setTotal(pageInfo.getTotal());
+        return result;
+    }
 
-	@Override
-	public TaotaoResult createItem(TbItem item, String desc) throws Exception {
-		// 使用IDUtils生成Id
-		Long itemId = IDUtils.genItemId();
-		item.setId(itemId);
-		// '商品状态，1-正常，2-下架，3-删除',
-		item.setStatus((byte) 1);
-		item.setCreated(new Date());
-		item.setUpdated(new Date());
-		// 插入到数据库
-		itemMapper.insert(item);
-		// 添加商品描述信息
-		TaotaoResult result = insertItemDesc(itemId, desc);
-		if (result.getStatus() != 200) {
-			throw new Exception();
-		}
-		return TaotaoResult.ok();
-	}
+    @Override
+    public TaotaoResult createItem(TbItem item) {
+        item.setId(IDUtils.genItemId());
+        item.setCreated(new Date());
+        item.setUpdated(new Date());
+        item.setStatus((byte) 1);
+        itemMapper.insertSelective(item);
+        return TaotaoResult.ok();
+    }
 
-	/**
-	 * 添加商品描述
-	 * 
-	 * @param desc
-	 */
-	private TaotaoResult insertItemDesc(Long itemId, String desc) {
-		System.out.println("开始执行");
-		TbItemDesc itemDesc = new TbItemDesc();
-		itemDesc.setItemId(itemId);
-		itemDesc.setItemDesc(desc);
-		itemDesc.setCreated(new Date());
-		itemDesc.setUpdated(new Date());
-		itemDescMapper.insert(itemDesc);
-		System.out.println("执行完了");
-		return TaotaoResult.ok();
-	}
+    /**
+     * 添加商品描述
+     *
+     * @param desc
+     */
+    private TaotaoResult insertItemDesc(Long itemId, String desc) {
+        System.out.println("开始执行");
+        TbItemDesc itemDesc = new TbItemDesc();
+        itemDesc.setItemId(itemId);
+        itemDesc.setItemDesc(desc);
+        itemDesc.setCreated(new Date());
+        itemDesc.setUpdated(new Date());
+        itemDescMapper.insert(itemDesc);
+        System.out.println("执行完了");
+        return TaotaoResult.ok();
+    }
 }

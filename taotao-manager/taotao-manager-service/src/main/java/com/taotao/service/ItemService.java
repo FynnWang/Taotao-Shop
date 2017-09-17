@@ -6,10 +6,10 @@ import com.taotao.pojo.TbItem;
 
 public interface ItemService {
 
-	TbItem getItemById(long itemId);
+    TbItem getItemById(long itemId);
 
-	EUDateGridResult getItemList(int page, int rows);
+    EUDateGridResult getItemList(int page, int rows);
 
-	TaotaoResult createItem(TbItem item,String desc) throws Exception;
+    TaotaoResult createItem(TbItem item);
 
 }
