@@ -19,14 +19,14 @@ public class TestFtp {
 		// 创建一个FtpClient对象
 		FTPClient ftpClient = new FTPClient();
 		// 创建一个ftp连接,默认21端口
-		ftpClient.connect("192.168.22.129", 21);
+		ftpClient.connect("192.168.0.202", 21);
 		// 登录ftp服务器
-		ftpClient.login("ftpuser", "123456");
+		ftpClient.login("chris", "123456");
 		// 上传文件
 		// 读取本地文件
-		FileInputStream inputStream = new FileInputStream(new File("D:\\image\\0.jpg"));
+		FileInputStream inputStream = new FileInputStream(new File("C:\\Users\\Administrator\\Pictures\\Saved Pictures\\0e630c414ca4293b2b2ef491d062e147.jpg"));
 		// 设置上传路径
-		ftpClient.changeWorkingDirectory("/home/ftpuser");
+		ftpClient.changeWorkingDirectory("/home/chris");
 		// 修改上传文件的格式
 		ftpClient.setFileType(FTP.BINARY_FILE_TYPE);
 		// 第一个参数：服务器端文档名

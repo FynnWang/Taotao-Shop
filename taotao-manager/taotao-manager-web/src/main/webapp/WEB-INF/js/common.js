@@ -27,7 +27,11 @@ var TT = TAOTAO = {
 		//指定上传文件请求的url。
 		uploadJson : '/pic/upload',
 		//上传类型，分别为image、flash、media、file
-		dir : "image"
+		dir : "image",
+		 //批量上传图片单张最大容量
+		imageSizeLimit : "10MB",
+		//批量上传图片同时上传最多个数
+        imageUploadLimit : 100
 	},
 	// 格式化时间
 	formatDateTime : function(val,row){

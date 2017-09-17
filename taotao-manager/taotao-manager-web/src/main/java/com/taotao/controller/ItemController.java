@@ -13,38 +13,36 @@ import com.taotao.pojo.TbItem;
 import com.taotao.service.ItemService;
 
 /**
- * 
  * @author Administrator
- *
  */
 @Controller
 public class ItemController {
 
-	@Autowired
-	private ItemService itemService;
+    @Autowired
+    private ItemService itemService;
 
-	// {itemId}指从url接收一个参数，如果与下面的方法中的itemId的参数相同，则不需要value
-	@RequestMapping("/item/{itemId}")
-	@ResponseBody
-	public TbItem getItemById(@PathVariable Long itemId) {
-		System.out.println(11111);
-		TbItem tbItem = itemService.getItemById(itemId);
-		return tbItem;
-	}
+    // {itemId}指从url接收一个参数，如果与下面的方法中的itemId的参数相同，则不需要value
+    @RequestMapping("/item/{itemId}")
+    @ResponseBody
+    public TbItem getItemById(@PathVariable Long itemId) {
+        System.out.println(11111);
+        TbItem tbItem = itemService.getItemById(itemId);
+        return tbItem;
+    }
 
-	@RequestMapping("/item/list")
-	@ResponseBody
-	public EUDateGridResult getItemList(Integer page, Integer rows) {
-		EUDateGridResult result = itemService.getItemList(page, rows);
-		// 返回的对象属性符合此格式要求{total:”2”,rows:[{“id”:”1”,”name”,”张三”},{“id”:”2”,”name”,”李四”}]}
-		return result;
-	}
+    @RequestMapping("/item/list")
+    @ResponseBody
+    public EUDateGridResult getItemList(Integer page, Integer rows) {
+        EUDateGridResult result = itemService.getItemList(page, rows);
+        // 返回的对象属性符合此格式要求{total:”2”,rows:[{“id”:”1”,”name”,”张三”},{“id”:”2”,”name”,”李四”}]}
+        return result;
+    }
 
-	@RequestMapping(value="/item/save", method=RequestMethod.POST)
-	@ResponseBody
-	private TaotaoResult createItem(TbItem item, String desc) throws Exception {
-		TaotaoResult result = itemService.createItem(item, desc);
-		return result;
-	}
-
+    @RequestMapping("/item/save")
+    @ResponseBody
+    public TaotaoResult createItem(TbItem item) {
+        TaotaoResult result = itemService.createItem(item);
+        System.out.println("result:" + result.toString());
+        return result;
+    }
 }

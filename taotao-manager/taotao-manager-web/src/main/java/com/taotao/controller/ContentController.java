@@ -1,5 +1,6 @@
 package com.taotao.controller;
 
+import com.taotao.common.pojo.EUDateGridResult;
 import com.taotao.common.pojo.TaotaoResult;
 import com.taotao.pojo.TbContent;
 import com.taotao.service.ContentService;
@@ -18,10 +19,12 @@ public class ContentController {
     @Autowired
     private ContentService contentService;
 
-    @RequestMapping("/save")
+    @RequestMapping("/query/list")
     @ResponseBody
-    public TaotaoResult contentAdd(TbContent content) {
-        TaotaoResult result = contentService.contentAdd(content);
+    public EUDateGridResult getContentList(Long categoryId, Integer page, Integer rows) {
+
+        EUDateGridResult result = contentService.getContentList(categoryId, page, rows);
+
         return result;
     }
 }
