@@ -20,5 +20,6 @@ public class FtpTest {
         ftpClient.setFileType(FTP.BINARY_FILE_TYPE);
         ftpClient.storeFile("hello3.jpg", fileInputStream);
         ftpClient.logout();
+        FtpTest test = new FtpTest();
     }
 }
